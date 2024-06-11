@@ -40,13 +40,35 @@ def main():
             print_msg(func_name, "INFO: We are running from the command line! All plots will be redirected to file in debug mode.", mode=verbose)
     
     # Load data
-    data_list, file_list = read_data(infile, input['dir'])
+    data_list_nh, file_list_nh = read_data(infile.replace('*','0[8,9]*'), input['dir'])
+    data_list_sh, file_list_sh = read_data(infile.replace('*','0[2,3]*'), input['dir'])
+    # Get list of unique years
     year_list = []
+    for data_nh, data_sh in zip(data_list_nh, data_list_sh):
+        year_list.append(dt.datetime.strptime(str(data_nh.time.min().to_numpy())[:-2], '%Y%m%d').date().year)
+        year_list.append(dt.datetime.strptime(str(data_sh.time.min().to_numpy())[:-2], '%Y%m%d').date().year)
+    year_list = np.unique(year_list)
+    print(year_list)
+    # Get mysic
+    my_sic_list = []
     # Loop over data
-    for data, ifile in zip(data_list, file_list):
-        print_msg(func_name, "Process file: %s" % (ifile))
-        outfile = ifile.replace('sst', 'multi_year_sic')
-        print_msg(func_name, "Save to: %s" % (outfile))
+    for data_nh, ifile_nh, data_sh, ifile_sh in zip(data_list_nh, file_list_nh, data_list_sh, file_list_sh):
+        print_msg(func_name, "Process files:\n%s\n%s" % (ifile_nh, ifile_sh))
+        #outfile = ifile.replace('sst', 'multi_year_sic')
+        # Get multi-year sea ice maps
+        my_sic_nh = data_nh['sic'].where(data_nh['sic'].lat>0, drop=True)
+        my_sic_sh = data_sh['sic'].where(data_sh['sic'].lat<=0, drop=True)
+        
+        # Minimum of sea ice fraction
+        min_nh = my_sic_nh.sum(dim=('lat','lon')).min()
+        min_sh = my_sic_sh.sum(dim=('lat','lon')).min()
+        if debug: 
+            print_msg(func_name, "Minimum sea ice:\nNH - %s\nSH - %s" % (min_nh, min_sh), mode=debug)
+        # Multi-year sea ice
+        my_sic_nh = my_sic_nh.where(my_sic_nh.sum(dim=('lat','lon'))==min_nh, drop=True).mean(dim='time').squeeze()
+        my_sic_sh = my_sic_sh.where(my_sic_sh.sum(dim=('lat','lon'))==min_sh, drop=True).mean(dim='time').squeeze()
+        # Concatenate the hemispheres
+        my_sic_list.append(xr.concat((my_sic_nh, my_sic_sh), dim='lat'))
     # Finish
     print_msg(func_name, " Finished.")
 
