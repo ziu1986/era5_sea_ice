@@ -62,10 +62,13 @@ def read_data(*arg,**kwarg):
     # Get arguments
     infile = arg[0]
     input_dir = arg[1]
+    debug = kwarg.pop('debug', False)
 
     data_list = []
     file_list = []
     if (infile.find('*')>=0) | (infile.find('?')>=0):
+        if debug:
+            print_msg(func_name, "Reading list of files...")
         for ifile in sorted(glob.glob(os.sep.join([input_dir, infile]))):
             file_list.append(os.path.basename(ifile))
             data_list.append(xr.open_dataset(ifile))
