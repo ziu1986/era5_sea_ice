@@ -48,6 +48,8 @@ def main():
         year_list.append(dt.datetime.strptime(str(data_nh.time.min().to_numpy())[:-2], '%Y%m%d').date().year)
         year_list.append(dt.datetime.strptime(str(data_sh.time.min().to_numpy())[:-2], '%Y%m%d').date().year)
     year_list = np.unique(year_list)
+    if debug:
+        print_msg(func_name, "List of years: ", year_list, mode=debug)
     # Get mysic
     my_sic_list = []
     # Loop over data
@@ -87,7 +89,7 @@ def main():
         print_msg(func_name, my_sic, mode=debug)   
 
     # Write
-    my_sic.to_netcdf("sic_multi-year_%s_%s.nc" % (year_list[0], year_list[-1]))
+    my_sic.to_netcdf("%s/sic_multi-year_%s_%s.nc" % (tgt['output'], year_list[0], year_list[-1]))
     # Finish
     print_msg(func_name, " Finished.")
 
