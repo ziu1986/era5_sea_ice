@@ -40,8 +40,8 @@ def main():
             print_msg(func_name, "INFO: We are running from the command line! All plots will be redirected to file in debug mode.", mode=verbose)
     
     # Load data
-    data_list_nh, file_list_nh = read_data(infile.replace('*','0[8,9]*'), input['dir'])
-    data_list_sh, file_list_sh = read_data(infile.replace('*','0[2,3]*'), input['dir'])
+    data_list_nh, file_list_nh = read_data(infile.replace('*','*0[8,9]*'), input['dir'], debug=debug)
+    data_list_sh, file_list_sh = read_data(infile.replace('*','*0[2,3]*'), input['dir'], debug=debug)
     # Get list of unique years
     year_list = []
     for data_nh, data_sh in zip(data_list_nh, data_list_sh):

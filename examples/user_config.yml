@@ -1,7 +1,7 @@
 # Example configuration
 input:
   dir: '/data/era5_sic'
-  files: 'ERA05_T42L90MA_2018*.nc'
+  files: 'ERA05_T42L90MA_201*.nc'
 target:
   output: 'results'
   plots: 'plots'

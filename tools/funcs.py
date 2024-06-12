@@ -63,20 +63,27 @@ def read_data(*arg,**kwarg):
     infile = arg[0]
     input_dir = arg[1]
     debug = kwarg.pop('debug', False)
+    verbose = kwarg.pop('verbose', False)
 
     data_list = []
     file_list = []
     if (infile.find('*')>=0) | (infile.find('?')>=0):
         if debug:
-            print_msg(func_name, "Reading list of files...")
+            print_msg(func_name, "Determine list of files...")
+            if verbose:
+                print_msg(func_name, sorted(glob.glob(os.sep.join([input_dir, infile]))), mode=debug)
         for ifile in sorted(glob.glob(os.sep.join([input_dir, infile]))):
             file_list.append(os.path.basename(ifile))
             data_list.append(xr.open_dataset(ifile))
     elif (type(infile)==list):
+        if debug:
+            print_msg(func_name, "Reading list of files...")
         for ifile in sorted(infile):
             file_list.append(ifile)
             data_list.append(xr.open_dataset(os.sep.join([input_dir, ifile])))
     else:
+        if debug:
+            print_msg(func_name, "Reading single file...")
         file_list.append(infile)
         data_list.append(xr.open_dataset(os.sep.join([input_dir, infile])))
 
