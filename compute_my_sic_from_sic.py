@@ -80,10 +80,13 @@ def main():
 
     # Concatenate the multi-yerar sea ice
     my_sic = xr.concat((my_sic_list), dim='time')
-    # Set sime meta-data
+   # Rename variable name and attributes
     my_sic.name = 'my_sic'
+    for key in nc_attrs:
+            if(debug):
+                print(key, nc_attrs[key])
+            my_sic.attrs[key] = nc_attrs[key]
     my_sic.coords['time'] = ('time', np.array(year_list)+1)
-    my_sic.attrs['units'] = 'fraction'
 
     if debug:
         print_msg(func_name, my_sic, mode=debug)   
