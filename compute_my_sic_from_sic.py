@@ -92,7 +92,7 @@ def main():
         print_msg(func_name, my_sic, mode=debug)   
 
     # Write
-    my_sic.to_netcdf(os.sep.join([tgt['output'],"sic_multi-year_%s_%s.nc" % (year_list[0], year_list[-1])]))
+    my_sic.to_netcdf(os.sep.join([tgt['output'],"%s_%s_%s.nc" % (tgt['file'], year_list[0], year_list[-1])]))
     # Finish
     print_msg(func_name, " Finished.")
 

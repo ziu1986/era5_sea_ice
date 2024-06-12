@@ -4,6 +4,7 @@ input:
   files: 'ERA05_T42L90MA_201*.nc'
 target:
   output: 'results'
+  file: 'ERA5_KIT_1.0_X_multi-year-sic'
   plots: 'plots'
 nc_attributes:
   short_name: 'my sic'
